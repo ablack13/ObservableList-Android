@@ -39,7 +39,6 @@ public class ContactsRecyclerListAdapter extends RecyclerView.Adapter<ContactsRe
         }
     }
 
-
     @Override
     public VHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new VHolder(LayoutInflater.from(context).inflate(R.layout.list_item_contact, null));
@@ -80,8 +79,8 @@ public class ContactsRecyclerListAdapter extends RecyclerView.Adapter<ContactsRe
     }
 
     public interface OnItemClickListener {
-        public void onClick(ContactItem contactItem);
+        void onClick(ContactItem contactItem);
 
-        public void onLongClick(ContactItem contactItem);
+        void onLongClick(ContactItem contactItem);
     }
 }

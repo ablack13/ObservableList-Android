@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initUI();
-        initListeners();
     }
 
     private void initUI() {
@@ -87,9 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-    }
-
-    private void initListeners() {
     }
 
     private AppCompatActivity getActivity() {

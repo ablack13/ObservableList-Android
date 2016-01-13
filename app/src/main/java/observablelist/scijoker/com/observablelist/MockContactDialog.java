@@ -92,9 +92,4 @@ public class MockContactDialog {
         builder.show();
         return builder;
     }
-
-
-    public static interface Callback {
-        public void contact(ContactItem contact);
-    }
 }
