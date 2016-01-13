@@ -1,9 +1,11 @@
 package com.scijoker.observablelist.type;
 
+import java.io.Serializable;
+
 /**
  * Created by scijoker on 13.01.16.
  */
-public abstract class ObjectProperty<T> {
+public abstract class ObjectProperty<T> implements Serializable {
     protected T value;
     protected Callbacks callback;
 
