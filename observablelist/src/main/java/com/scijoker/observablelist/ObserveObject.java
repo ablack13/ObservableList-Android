@@ -13,11 +13,11 @@ public abstract class ObserveObject<T> implements ObjectProperty.Callbacks {
     private boolean isIgnore;
 
     @Override
-    public void onChanged(Object newObj) {
+    public void onChanged() {
         if (list != null && list.getListeners() != null) {
             for (ObservableList.OnChangeListener<T> onChangeListener : list.getListeners()) {
                 List<ObservableList.Event<T>> eventList = new ArrayList<>();
-                eventList.add(new ObservableList.Event<T>(ObservableList.Event.NONE, null, (T) newObj));
+                eventList.add(new ObservableList.Event<T>(ObservableList.Event.NONE, null, (T) getObserveObject()));
                 onChangeListener.onChanged(ObservableList.EventType.UPDATE_IN_OBJECT, eventList);
             }
         }
@@ -27,7 +27,6 @@ public abstract class ObserveObject<T> implements ObjectProperty.Callbacks {
         this.list = list;
     }
 
-    @Override
     public Object getObserveObject() {
         return this;
     }

@@ -24,14 +24,12 @@ public abstract class ObjectProperty<T> {
         if (!value.equals(this.value)) {
             this.value = value;
             if (!isIgnore && callback != null) {
-                callback.onChanged(callback.getObserveObject());
+                callback.onChanged();
             }
         }
     }
 
     public static interface Callbacks<T> {
-        public void onChanged(T newObj);
-
-        public T getObserveObject();
+        public void onChanged();
     }
 }
