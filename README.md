@@ -18,16 +18,6 @@ Add the dependency
 	
 <h3>How to use</h3>
 
-1.Create ObservableList:
-
-<b>ObservableList<ObjectType> list = new ObservableArrayList<>();</b> 
-
-
-2.Add change listener:
-
-<b>list.addOnChangeListener(new ObservableList.OnChangeListener<Integer>());</b>
-
-<h3> Example</h3>
 See example in <b> app</b> module
 
 License
