@@ -2,55 +2,97 @@ package observablelist.scijoker.com.observablelist;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.scijoker.observablelist.ObservableArrayList;
 import com.scijoker.observablelist.ObservableList;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView listView;
+    private Toolbar toolbar;
+    private RecyclerView recyclerView;
+    private ContactsRecyclerListAdapter adapter;
+    private ObservableList<ContactItem> contactItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ObservableList<Integer> list = new ObservableArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            list.add(i);
-        }
-        list.addOnChangeListener(new ObservableList.OnChangeListener<Integer>() {
-            @Override
-            public void onChanged(ObservableList.EventType eventType, List<ObservableList.Event<Integer>> events) {
-                if (listView.getAdapter() != null) {
-                    for (int i = 0; i < events.size(); i++) {
-                        ObservableList.Event<Integer> event = events.get(i);
-                        Toast.makeText(MainActivity.this, "event type: "+eventType.name().toString()+" old value:" + event.getOldValue() + " new value:" + event.getNewValue() + " [" + event.getIndex() + "]", Toast.LENGTH_LONG).show();
+        initUI();
+        initListeners();
+    }
+
+    private void initUI() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        initToolbar();
+        initRecyclerView();
+    }
+
+    private void initRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        contactItems = MockContactsListDataHelper.getContactsList();
+        contactItems.addOnChangeListener((eventType, events) -> {
+            for (ObservableList.Event<ContactItem> event : events) {
+                switch (eventType) {
+                    case ADD: {
+                        adapter.notifyItemInserted(event.getIndex());
+                        break;
                     }
-                    ((ArrayAdapter) listView.getAdapter()).notifyDataSetChanged();
+                    case REMOVE: {
+                        adapter.notifyItemRemoved(event.getIndex());
+                        break;
+                    }
+                    case UPDATE: {
+                        adapter.notifyItemChanged(event.getIndex());
+                        break;
+                    }
+                    case UPDATE_IN_OBJECT: {
+                        int obj = contactItems.indexOf(event.getNewValue());
+                        adapter.notifyItemChanged(obj);
+                        break;
+                    }
                 }
             }
         });
 
-        listView = (ListView) findViewById(R.id.list_view);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter = new ContactsRecyclerListAdapter(getActivity(), contactItems);
+        adapter.setOnItemClickListener(new ContactsRecyclerListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    list.add(0, 433);
-                } else if (i == 1) {
-                    list.remove(i);
-                } else {
-                    list.set(i, (list.get(i).intValue() + 1));
-                }
+            public void onClick(ContactItem contactItem) {
+                MockContactDialog.showEditDialog(getActivity(), contactItem);
+            }
+
+            @Override
+            public void onLongClick(ContactItem contactItem) {
+                contactItems.remove(contactItem);
             }
         });
-        listView.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, list));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void initToolbar() {
+        toolbar.setNavigationIcon(R.drawable.ic_contacts_white_24dp);
+        toolbar.inflateMenu(R.menu.main_menu);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.menu_action_add_contact) {
+                MockContactDialog.showAddDialog(getActivity(), contactItems);
+            }
+            return true;
+        });
+    }
+
+    private void initListeners() {
+    }
+
+    private AppCompatActivity getActivity() {
+        return MainActivity.this;
     }
 }

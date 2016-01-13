@@ -11,11 +11,14 @@ public interface ObservableList<T> extends List<T> {
         void onChanged(EventType eventType, List<Event<T>> events);
     }
 
+    List<OnChangeListener<T>> getListeners();
+
     public enum EventType {
-        ADD, REMOVE, UPDATE
+        ADD, REMOVE, UPDATE, UPDATE_IN_OBJECT
     }
 
     public static class Event<T> {
+        public static int NONE = -1;
         private int index;
         private T oldValue;
         private T newValue;

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ObservableArrayList<T> extends ArrayList<T> implements ObservableList<T> {
+public class ObservableArrayList<T extends ObserveObject> extends ArrayList<T> implements ObservableList<T> {
     private List<OnChangeListener<T>> listeners = new ArrayList<>();
 
     public ObservableArrayList() {
@@ -23,6 +23,7 @@ public class ObservableArrayList<T> extends ArrayList<T> implements ObservableLi
     @Override
     public boolean add(T newValue) {
         boolean result = super.add(newValue);
+        newValue.setList(this);
         for (OnChangeListener<T> listener : listeners) {
             listener.onChanged(EventType.ADD, Collections.singletonList(new Event<>(size() - 1, null, newValue)));
         }
@@ -32,6 +33,7 @@ public class ObservableArrayList<T> extends ArrayList<T> implements ObservableLi
     @Override
     public void add(int i, T newValue) {
         super.add(i, newValue);
+        newValue.setList(this);
 
         for (OnChangeListener<T> listener : listeners) {
             listener.onChanged(EventType.ADD, Collections.singletonList(new Event<>(i, null, newValue)));
@@ -152,5 +154,10 @@ public class ObservableArrayList<T> extends ArrayList<T> implements ObservableLi
     @Override
     public void removeSubscriber(OnChangeListener<T> listener) {
         listeners.remove(listener);
+    }
+
+    @Override
+    public List<OnChangeListener<T>> getListeners() {
+        return listeners;
     }
 }
