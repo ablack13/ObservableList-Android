@@ -13,7 +13,7 @@ Add it in your root build.gradle at the end of repositories:
 Add the dependency
 
 	dependencies {
-	        compile 'com.github.scijoker:ObservableList-Android:1.0'
+	        compile 'com.github.scijoker:ObservableList-Android:2.0'
 	}
 	
 <h3>How to use</h3>
